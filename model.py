@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
-
+from werkzeug.security import generate_password_hash, check_password_hash
 from __init__ import app
 
 # Tutorial: https://www.sqlalchemy.org/library.html#tutorials, try to get into Python shell and follow along
@@ -115,6 +115,40 @@ def model_printer():
     print(result.keys())
     for row in result:
         print(row)
+
+ # set password method is used to create encrypted password
+    def set_password(self, password):
+        """Create hashed password."""
+        * Procedural Abstraction
+        self.password = generate_password_hash(password, method='sha256')
+
+    # check password to check versus encrypted password
+    def is_password_match(self, password):
+        """Check hashed password."""
+        result = check_password_hash(self.password, password)
+        return result
+
+#The class that you use to represent users needs to implement these properties and methods:  
+#is_authenticated, is_active, is_anonymous, get_id()
+#To make implementing a user class easier, you can inherit from UserMixin, which provides default implementations  
+#for all of these properties and methods.
+
+from flask_login import UserMixin
+#Users DB is a collection Data Structure
+class Users(UserMixin, db.Model):
+    # define the Users schema
+    userID = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), unique=False, nullable=False)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(255), unique=False, nullable=False)
+    phone = db.Column(db.String(255), unique=False, nullable=False)
+
+# required for login_user, overrides id (login_user default) to implemented userID
+# The method get_id() must return a str that uniquely identifies this user, and can be used to load the user from the user_loader callback.
+def get_id(self):
+    return self.userID
+
+
 
 
 if __name__ == "__main__":

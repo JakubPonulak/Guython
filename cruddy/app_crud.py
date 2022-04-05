@@ -92,3 +92,17 @@ def search_term():
     term = req['term']
     response = make_response(jsonify(users_ilike(term)), 200)
     return response
+
+flask_login.login_required
+#If you decorate a view with this, it will ensure that the current user is logged in and authenticated before calling the actual view. 
+#(If they are not, it calls the LoginManager.unauthorized callback.). 
+# Use this example for Hack #3.
+@app_crud.route('/')
+@login_required  # Flask-Login uses this decorator to restrict access to logged in users
+
+# Flask-Login directs unauthorised users to this unauthorized_handler
+@login_manager.unauthorized_handler
+def unauthorized():
+    """Redirect unauthorized users to Login page."""
+    return redirect(url_for('crud.crud_login'))
+T
